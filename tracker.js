@@ -32,7 +32,7 @@ function userOption() {
             "Exit"
         ]
     }]).then(function(response) {
-        switch (response.name) {
+        switch (response.answer) {
             case "Add":
                 addOptions();
                 break;
@@ -60,7 +60,7 @@ function addOptions() {
             "Exit"
         ]
     }]).then(function(response) {
-        switch (response.name) {
+        switch (response.answer) {
             case "Department":
                 addDepartment();
                 break;
@@ -88,7 +88,7 @@ function viewOptions() {
             "Exit"
         ]
     }]).then(function(response) {
-        switch (response.name) {
+        switch (response.answer) {
             case "Department":
                 viewDepartment();
                 break;
@@ -97,6 +97,34 @@ function viewOptions() {
                 break;
             case "Employee":
                 viewEmployee();
+                break;
+            default:
+                return;
+        };
+    });
+};
+
+function updateOptions() {
+    inquirer.prompt([{
+        type: "list",
+        name: "answer",
+        message: "What would you like to update in your employee tracker?",
+        choices: [
+            "Department",
+            "Role",
+            "Employee",
+            "Exit"
+        ]
+    }]).then(function(response) {
+        switch (response.answer) {
+            case "Department":
+                updateDepartment();
+                break;
+            case "Role":
+                updateRole();
+                break;
+            case "Employee":
+                updateEmployee();
                 break;
             default:
                 return;
