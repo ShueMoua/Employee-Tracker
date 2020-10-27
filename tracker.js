@@ -17,10 +17,10 @@ connection.connect(function(err) {
     if (err) throw err;
     console.log(`Connected as id ${connection.threadId}`);
     //create a function with a switch statement to let the user choose an option to; add and view departments, roles, and employees. (also update)
-    userOption();
+    start();
 });
 
-function userOption() {
+function start() {
     inquirer.prompt([{
         type: "list",
         name: "answer",
@@ -136,7 +136,8 @@ function addDepartment() {
     inquirer.prompt([{
         type: "input",
         name: "name",
-        message: "What is the name of the department you would like to add?"
+        message: "What is the name of the department you would like to add?",
+        //validate answer and return false if name is more than 30 characters
     }]).then(function(response) {
         connection.query("INSERT INTO department SET?", {
                 name: response.name
@@ -147,7 +148,52 @@ function addDepartment() {
                 };
                 console.log("You successfully added a new department!");
             });
-        userOption();
+        start();
         connection.end();
     })
-}
+};
+
+function addRole() {
+    connection.query("SELECT * FROM department", function(err, results) {
+        if (err) {
+            throw err;
+        };
+
+        inquirer.prompt([{
+                    type: "rawlist",
+                    name: "dptChoice",
+                    choices: function() {
+                        let dptArray = [];
+                        for (let i = 0; i < results.length; i++) {
+                            dptArray.push(results[i].name);
+                        }
+                        return dptArray;
+                    },
+                    message: "Which department would you like to add a new role?"
+                },
+                {
+                    type: "input",
+                    name: "title",
+                    message: "What is the name of the role you want to add?"
+                },
+                {
+                    type: "input",
+                    name: "salary",
+                    message: "What is the salary of this role?",
+                    validate: function(value) {
+                        if (isNaN(value) === false) {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            ])
+            .then(function(response) {
+                connection.query("INSERT INTO roles SET?", {
+                    title: response.title,
+                    salary: response.salary,
+                });
+                start();
+            });
+    });
+};
