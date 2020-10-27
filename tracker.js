@@ -160,40 +160,78 @@ function addRole() {
         };
 
         inquirer.prompt([{
-                    type: "rawlist",
-                    name: "dptChoice",
-                    choices: function() {
-                        let dptArray = [];
-                        for (let i = 0; i < results.length; i++) {
-                            dptArray.push(results[i].name);
-                        }
-                        return dptArray;
-                    },
-                    message: "Which department would you like to add a new role?"
-                },
-                {
-                    type: "input",
-                    name: "title",
-                    message: "What is the name of the role you want to add?"
-                },
-                {
-                    type: "input",
-                    name: "salary",
-                    message: "What is the salary of this role?",
-                    validate: function(value) {
-                        if (isNaN(value) === false) {
-                            return true;
-                        }
-                        return false;
+                type: "rawlist",
+                name: "dptChoice",
+                choices: function() {
+                    let dptArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        dptArray.push(results[i].name);
                     }
+                    return dptArray;
+                },
+                message: "Which department would you like to add a new role?"
+            },
+            {
+                type: "input",
+                name: "title",
+                message: "What is the name of the role you want to add?"
+            },
+            {
+                type: "input",
+                name: "salary",
+                message: "What is the salary of this role?",
+                validate: function(value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return false;
                 }
-            ])
-            .then(function(response) {
-                connection.query("INSERT INTO roles SET?", {
-                    title: response.title,
-                    salary: response.salary,
-                });
-                start();
+            }
+        ]).then(function(response) {
+            connection.query("INSERT INTO roles SET ?", {
+                title: response.title,
+                salary: response.salary,
             });
+            start();
+            connection.end();
+        });
+    });
+};
+
+function addEmployee() {
+    connection.query("SELECT * FROM roles", function(err, results) {
+        if (err) {
+            throw err;
+        };
+        inquirer.prompt([{
+                type: "rawlist",
+                name: "roleChoice",
+                choices: function() {
+                    let roleArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        roleArray.push(results[i].title);
+                    }
+                    return roleArray;
+                },
+                message: "What is the role of the new employee?"
+            },
+            {
+                type: "input",
+                name: "first",
+                message: "What is the new employee's first name?"
+            },
+            {
+                type: "input",
+                name: "last",
+                message: "What is the new employee's last name?"
+            }
+        ]).then(function(response) {
+            connection.query("INSERT INTO employee SET ?", {
+                first_name: response.first,
+                last_name: response.last,
+            });
+            start();
+            connection.end();
+        });
     });
 };
