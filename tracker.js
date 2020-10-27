@@ -44,8 +44,8 @@ function userOption() {
                 break;
             default:
                 return;
-        }
-    })
+        };
+    });
 };
 
 function addOptions() {
@@ -72,6 +72,34 @@ function addOptions() {
                 break;
             default:
                 return;
-        }
-    })
-}
+        };
+    });
+};
+
+function viewOptions() {
+    inquirer.prompt([{
+        type: "list",
+        name: "answer",
+        message: "What would you like to view in your employee tracker?",
+        choices: [
+            "Department",
+            "Role",
+            "Employee",
+            "Exit"
+        ]
+    }]).then(function(response) {
+        switch (response.name) {
+            case "Department":
+                viewDepartment();
+                break;
+            case "Role":
+                viewRole();
+                break;
+            case "Employee":
+                viewEmployee();
+                break;
+            default:
+                return;
+        };
+    });
+};
