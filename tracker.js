@@ -1,7 +1,7 @@
 // Dependencies 
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const { allowedNodeEnvironmentFlags } = require("process");
+
 
 //Connecting the database to js file
 const connection = mysql.createConnection({
@@ -9,7 +9,7 @@ const connection = mysql.createConnection({
     port: 3306,
     user: "root",
     password: "root",
-    database: "employee-trackerDB"
+    database: "employee_trackerDB"
 });
 
 
@@ -131,3 +131,23 @@ function updateOptions() {
         };
     });
 };
+
+function addDepartment() {
+    inquirer.prompt([{
+        type: "input",
+        name: "name",
+        message: "What is the name of the department you would like to add?"
+    }]).then(function(response) {
+        connection.query("INSERT INTO department SET?", {
+                name: response.name
+            },
+            function(err) {
+                if (err) {
+                    throw err;
+                };
+                console.log("You successfully added a new department!");
+            });
+        userOption();
+        connection.end();
+    })
+}
