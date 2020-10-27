@@ -18,3 +18,31 @@ connection.connect(function(err) {
     //create a function with a switch statement to let the user choose an option to; add and view departments, roles, and employees. (also update)
     userOption();
 });
+
+function userOption() {
+    inquirer.prompt([{
+        type: "list",
+        name: "answer",
+        message: "Would you like to Add, View or Update your employee tracker?",
+        choices: [
+            "Add",
+            "View",
+            "Update",
+            "Exit"
+        ]
+    }]).then(function(response) {
+        switch (response.name) {
+            case "Add":
+                addOptions();
+                break;
+            case "View":
+                viewOptions();
+                break;
+            case "Update":
+                updateOptions();
+                break;
+            default:
+                return;
+        }
+    })
+};
