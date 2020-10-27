@@ -1,6 +1,7 @@
 // Dependencies 
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const { allowedNodeEnvironmentFlags } = require("process");
 
 //Connecting the database to js file
 const connection = mysql.createConnection({
@@ -46,3 +47,31 @@ function userOption() {
         }
     })
 };
+
+function addOptions() {
+    inquirer.prompt([{
+        type: "list",
+        name: "answer",
+        message: "What would you like to add to your employee tracker?",
+        choices: [
+            "Department",
+            "Role",
+            "Employee",
+            "Exit"
+        ]
+    }]).then(function(response) {
+        switch (response.name) {
+            case "Department":
+                addDepartment();
+                break;
+            case "Role":
+                addRole();
+                break;
+            case "Employee":
+                addEmployee();
+                break;
+            default:
+                return;
+        }
+    })
+}
