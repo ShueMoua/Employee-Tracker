@@ -1,7 +1,7 @@
 // Dependencies 
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-
+const table = require("console.table");
 
 //Connecting the database to js file
 const connection = mysql.createConnection({
@@ -43,7 +43,8 @@ function start() {
                 updateOptions();
                 break;
             default:
-                return;
+                console.log("You have exited the application.");
+                return connection.end();
         };
     });
 };
@@ -71,7 +72,8 @@ function addOptions() {
                 addEmployee();
                 break;
             default:
-                return;
+                console.log("You have exited the application.")
+                return connection.end();
         };
     });
 };
@@ -99,7 +101,8 @@ function viewOptions() {
                 viewEmployee();
                 break;
             default:
-                return;
+                console.log("You have exited the application.")
+                return connection.end();
         };
     });
 };
@@ -127,6 +130,7 @@ function updateOptions() {
                 updateEmployee();
                 break;
             default:
+                console.log("You have exited the application.")
                 return;
         };
     });
@@ -139,17 +143,16 @@ function addDepartment() {
         message: "What is the name of the department you would like to add?",
         //validate answer and return false if name is more than 30 characters
     }]).then(function(response) {
-        connection.query("INSERT INTO department SET?", {
+        connection.query("INSERT INTO department SET ?", {
                 name: response.name
             },
             function(err) {
                 if (err) {
                     throw err;
                 };
-                console.log("You successfully added a new department!");
             });
-        start();
-        connection.end();
+        console.log("You've successfully added a new department!");
+        return start();
     })
 };
 
@@ -158,7 +161,6 @@ function addRole() {
         if (err) {
             throw err;
         };
-
         inquirer.prompt([{
                 type: "rawlist",
                 name: "dptChoice",
@@ -174,7 +176,7 @@ function addRole() {
             {
                 type: "input",
                 name: "title",
-                message: "What is the name of the role you want to add?"
+                message: "What is the title of the role you want to add?"
             },
             {
                 type: "input",
@@ -189,11 +191,16 @@ function addRole() {
             }
         ]).then(function(response) {
             connection.query("INSERT INTO roles SET ?", {
-                title: response.title,
-                salary: response.salary,
-            });
-            start();
-            connection.end();
+                    title: response.title,
+                    salary: response.salary,
+                },
+                function(err) {
+                    if (err) {
+                        throw err;
+                    };
+                });
+            console.log("You've successfully created a new role!");
+            return start();
         });
     });
 };
@@ -227,11 +234,26 @@ function addEmployee() {
             }
         ]).then(function(response) {
             connection.query("INSERT INTO employee SET ?", {
-                first_name: response.first,
-                last_name: response.last,
-            });
-            start();
-            connection.end();
+                    first_name: response.first,
+                    last_name: response.last,
+                },
+                function(err) {
+                    if (err) {
+                        throw err;
+                    };
+                });
+            console.log("You've successfully added a new employee!")
+            return start();
         });
+    });
+};
+
+function viewDepartment() {
+    connection.query("SELECT * FROM department", function(err, results) {
+        if (err) {
+            throw err;
+        };
+        console.table(results);
+        return start();
     });
 };
