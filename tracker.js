@@ -308,8 +308,8 @@ function updateDepartment() {
                 if (results[i].dpt_name === response.name) {
                     chosenDpt = results[i];
                     console.log("this is chosenDpt" + chosenDpt);
-                }
-            }
+                };
+            };
             connection.query("UPDATE department SET ? WHERE ?", [{
                     dpt_name: response.Newname
                 },
@@ -321,3 +321,87 @@ function updateDepartment() {
         });
     });
 };
+
+function updateRole() {
+    connection.query("SELECT * FROM roles", function(err, results) {
+        if (err) {
+            throw err;
+        };
+        inquirer.prompt([{
+                type: "rawlist",
+                name: "role",
+                choices: function() {
+                    let roleArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        roleArray.push(results[i].title);
+                    }
+                    return roleArray;
+                },
+                message: "Which role would you like to update?"
+            },
+            {
+                type: "list",
+                name: "roleChoice",
+                message: "What would you like to update about this role?",
+                choices: [
+                    "Title",
+                    "Salary"
+                ]
+            },
+            {
+                type: "input",
+                name: "newUpdate",
+                message: "Input your new update"
+            }
+        ]).then(function(response) {
+            console.log(response);
+            // let chosenRole;
+            // for (let i = 0; i < results.length; i++) {
+            //     if (results[i].dpt_name === response.name) {
+            //         chosenRole = results[i];
+            //         console.log("this is chosenRole" + chosenRole);
+            //     };
+            // };
+            // connection.query("UPDATE roles SET ? WHERE ?", [{
+
+            // }])
+        });
+    });
+};
+
+function updateEmployee() {
+    connection.query("SELECT * FROM employee", function(err, results) {
+        if (err) {
+            throw err;
+        };
+        inquirer.prompt([{
+                type: "rawlist",
+                name: "employee",
+                choices: function() {
+                    let employeeArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        employeeArray.push(results[i].first_name);
+                    };
+                    return employeeArray;
+                },
+                message: "Which employee would you like to make an update to?"
+            },
+            {
+                type: "list",
+                name: "updateChoice",
+                message: "What would you like to update about this employee?",
+                choices: [
+                    "First Name",
+                    "Last Name"
+                ]
+            },
+            {
+                type: "input",
+                name: "newUpdate",
+                message: "Input your new update"
+            }
+        ]).then(function(response) {
+            console.log(response);
+        })
+    })
+}
