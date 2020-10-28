@@ -2,6 +2,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const table = require("console.table");
+const { connect } = require("http2");
 
 //Connecting the database to js file
 const connection = mysql.createConnection({
@@ -144,7 +145,7 @@ function addDepartment() {
         //validate answer and return false if name is more than 30 characters
     }]).then(function(response) {
         connection.query("INSERT INTO department SET ?", {
-                name: response.name
+                dpt_name: response.name
             },
             function(err) {
                 if (err) {
@@ -167,7 +168,7 @@ function addRole() {
                 choices: function() {
                     let dptArray = [];
                     for (let i = 0; i < results.length; i++) {
-                        dptArray.push(results[i].name);
+                        dptArray.push(results[i].dpt_name);
                     }
                     return dptArray;
                 },
@@ -277,3 +278,46 @@ function viewEmployee() {
         return start();
     });
 }
+
+function updateDepartment() {
+    connection.query("SELECT * FROM department", function(err, results) {
+        if (err) {
+            throw err;
+        };
+        inquirer.prompt([{
+                type: "rawlist",
+                name: "name",
+                choices: function() {
+                    let dptArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        dptArray.push(results[i].dpt_name);
+                    }
+                    return dptArray;
+                },
+                message: "Which department would you like to update?"
+            },
+            {
+                type: "input",
+                name: "newName",
+                message: "What would you like to update the department name to?"
+            }
+        ]).then(function(response) {
+            console.log(response);
+            let chosenDpt;
+            for (let i = 0; i < results.length; i++) {
+                if (results[i].dpt_name === response.name) {
+                    chosenDpt = results[i];
+                    console.log("this is chosenDpt" + chosenDpt);
+                }
+            }
+            connection.query("UPDATE department SET ? WHERE ?", [{
+                    dpt_name: response.Newname
+                },
+                {
+                    department_id: chosenDpt.name
+                }
+            ]);
+            return start();
+        });
+    });
+};
