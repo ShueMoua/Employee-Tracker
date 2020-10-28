@@ -257,3 +257,13 @@ function viewDepartment() {
         return start();
     });
 };
+
+function viewRole() {
+    connection.query("SELECT * FROM roles", function(err, results) {
+        if (err) {
+            throw err;
+        };
+        console.table(results);
+        return start();
+    });
+};
