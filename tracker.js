@@ -302,6 +302,7 @@ function updateDepartment() {
                 message: "What would you like to update the department name to?"
             }
         ]).then(function(response) {
+            //FIX UPDATE CODING
             console.log(response);
             let chosenDpt;
             for (let i = 0; i < results.length; i++) {
@@ -354,6 +355,7 @@ function updateRole() {
                 message: "Input your new update"
             }
         ]).then(function(response) {
+            //FIX UPDATE CODING
             console.log(response);
             // let chosenRole;
             // for (let i = 0; i < results.length; i++) {
@@ -402,6 +404,7 @@ function updateEmployee() {
             }
         ]).then(function(response) {
             console.log(response);
+            //Add update code!
         })
     })
 }
